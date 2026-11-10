@@ -1,0 +1,55 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build and generated output
+dist/
+**/dist/
+build/
+**/build/
+coverage/
+**/coverage/
+out/
+**/out/
+.cache/
+**/.cache/
+.turbo/
+**/.turbo/
+
+# Environment files and local secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+
+# Agent-generated working files and memory
+backend/public/working-dir/
+backend/public/agent-working-dir/
+backend/public/aent-working-dir/
+
+# Logs and runtime files
+*.log
+logs/
+**/logs/
+*.pid
+*.pid.lock
+
+# Test and tooling artifacts
+.nyc_output/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# Editor and operating-system files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+**/tmp/
+**/temp/
