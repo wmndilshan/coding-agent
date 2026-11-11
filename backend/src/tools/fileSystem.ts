@@ -272,3 +272,13 @@ export const fileSystemTools = [
     lsTool,
     searchFileTool
 ]
+
+export const selectFileSystemTool = {
+    read_file: readFileTool,
+    write_file: writeFileTool,
+    edit_file: editFileTool,
+    file_tree: fileTreeTool,
+    list_dir: listDirTool,
+    ls: lsTool,
+    search_file: searchFileTool
+} as Record<string, any>

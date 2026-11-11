@@ -272,3 +272,11 @@ export const agentMemoryTools = [
     readEmbeddingsIndexTool
 ]
 
+export const selectAgentMemoryTools = {
+    read_agent_index: readAgentIndexTool,
+    update_agent_index: updateAgentIndexTool,
+    read_agent_module: readAgentModuleTool,
+    write_agent_module: writeAgentModuleTool,
+    list_agent_modules: listAgentModulesTool,
+    read_embeddings_index: readEmbeddingsIndexTool
+} as Record<string, any>

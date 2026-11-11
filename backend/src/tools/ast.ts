@@ -220,3 +220,8 @@ export const astAnalyzeTool = tool(
         schema: z.object({ file_path: z.string().min(1).describe("Path to a JS/TS/JSX/TSX file relative to the working directory") })
     }
 )
+
+
+export const selectAstTools = {
+    "ast_analyze": astAnalyzeTool
+} as Record<string, any>

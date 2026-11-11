@@ -60,7 +60,7 @@ export function expressServer(app: Express, PORT: number) {
                 clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
                 callbackURL: process.env.CALL_BACK_URL as string
             },
-            async (accessToken: string, refershToken: string, profile: any, done: any) => {
+            async (accessToken: string, refreshToken: string, profile: any, done: any) => {
                 try {
                     const id = profile?.id
                     const name = profile?.name
@@ -72,7 +72,7 @@ export function expressServer(app: Express, PORT: number) {
                         name,
                         image,
                         access_token: accessToken,
-                        refersh_token: refershToken
+                        refresh_token: refreshToken
                     })
                     return done(null, { id, name, image })
                 } catch (error) {

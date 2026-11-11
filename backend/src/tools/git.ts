@@ -116,3 +116,9 @@ export const gitStatusTool = tool(
 )
 
 export const gitTools = [gitDiffTool, gitLogTool, gitStatusTool]
+
+export const selectGitTools = {
+    "git_diff": gitDiffTool,
+    "git_log": gitLogTool,
+    "git_status": gitStatusTool
+} as Record<string, any>

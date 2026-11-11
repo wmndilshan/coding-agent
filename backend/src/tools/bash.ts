@@ -117,3 +117,6 @@ export const bashTool = tool(
     }
 )
 
+export const selectBashTool = {
+    bash: bashTool
+} as Record<string, any>

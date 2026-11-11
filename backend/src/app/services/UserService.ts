@@ -5,7 +5,7 @@ interface CreateUserInput {
     name: string
     image: string
     access_token?: string
-    refersh_token?: string
+    refresh_token?: string
 }
 
 export class UserService {
@@ -19,7 +19,7 @@ export class UserService {
     }
 
     async createUser(props: CreateUserInput) {
-        const { id, name, image, access_token, refersh_token } = props
+        const { id, name, image, access_token, refresh_token } = props
 
         const existingUser = await User.findOne({ githubId: id })
         if (!existingUser) {
@@ -27,7 +27,7 @@ export class UserService {
                 name,
                 image,
                 access_token,
-                refersh_token,
+                refresh_token,
                 githubId: id
             })
 
@@ -41,7 +41,7 @@ export class UserService {
                 existingUser._id,
                 {
                     access_token,
-                    refersh_token,
+                    refresh_token,
                     name,
                     image
                 },

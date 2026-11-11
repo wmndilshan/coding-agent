@@ -279,3 +279,8 @@ export const impactAnallysisTool = impactAnalysisTool
 
 export const graphTools = [buildImportGraphTool, queryImportGraphTool, impactAnalysisTool]
 
+export const selectGraphTool = {
+    build_import_graph: buildImportGraphTool,
+    query_import_graph: queryImportGraphTool,
+    impact_analysis: impactAnallysisTool
+} as Record<string, any>
