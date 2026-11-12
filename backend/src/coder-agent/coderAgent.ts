@@ -49,7 +49,7 @@ export async function codeAgent(userInput: string) {
                 userInput: ${userInput}
                 </user_instructions>`)
             ]
-        }
+        }, { recursionLimit: 300 }
     )
 
     return result
