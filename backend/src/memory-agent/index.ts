@@ -1,5 +1,5 @@
 import path from "node:path"
-import { createAgent, HumanMessage } from "langchain"
+import { createAgent, HumanMessage, toolCallLimitMiddleware } from "langchain"
 import { MemoryStore } from "./memo/memoryStore"
 import { ContextBuilder } from "./memo/contextBuilder"
 import { retrieveRelevantLTMTool } from "./tools/hybridSearchTool"
@@ -29,7 +29,19 @@ export async function createMemoryAgent({
         model,
         tools: [writeLTMTool, retrieveRelevantLTMTool, transferTool],
         systemPrompt: MEMORY_AGENT_SYSTEM_PROMPT,
-        middleware: [toolMonitoringMiddleware]
+        middleware: [
+            toolCallLimitMiddleware({
+                toolName: "transfer_to_assistant",
+                runLimit: 1,
+                exitBehavior: "end"
+            }),
+            toolCallLimitMiddleware({
+                toolName: "retrieve_relevant_ltm",
+                runLimit: 2,
+                exitBehavior: "end"
+            }),
+            toolMonitoringMiddleware
+        ]
     })
 
     async function invokeMemoryAgent(userInput: string) {
@@ -52,7 +64,64 @@ export async function createMemoryAgent({
         return aiResponse
     }
 
+    async function streamAgentResult(userInput: string, config: any) {
+        const [contextRetriever, _] = await Promise.all([
+            contextBuilder.assemble(userInput, {}),
+            memo.logInteraction("User", userInput, new Date())
+        ])
+
+        let fullContent = ""
+
+        for await (const chunk of await agent.stream(
+            { messages: [{ role: "user", content: contextRetriever?.prompt }]},
+            { streamMode: "updates" }
+        )) {
+            const updates = chunk?.tools?.messages
+            const req = chunk?.model_request?.messages
+
+            if (updates && updates.length > 0) {
+                if (updates[0].name === "retrieve_relevant_ltm" || updates[0].name === "transfer_to_assistant") {
+                    fullContent += "<think>" + updates[0].content + "</think>"
+                    config?.writer?.({
+                        manager_name: "memoryManger",
+                        content: "<think>" + updates[0].content + "</think>"
+                    })
+                }
+            }
+
+            if (req && req.length > 0) {
+                const aiMsg = req[0]
+                const content = aiMsg?.content ?? ""
+
+                const hasToolCalls = (aiMsg as any).tool_calls && (aiMsg as any).tool_calls.length > 0
+
+                if (hasToolCalls) {
+                    fullContent += content
+                    config?.writer?.({
+                        manager_name: "memoryAgent",
+                        content: content
+                    })
+                } else {
+                    fullContent += content
+                    config?.writer?.({
+                        manager_name: "memoryAgent",
+                        content: content
+                    })
+                }
+            }
+        }
+
+        await memo.logInteraction("Coder-Agent", fullContent, new Date())
+
+        return {
+            fullContent,
+            coderAgentContext: contextRetriever?.coderAgentContextLayers
+        }
+    }
+
+
     return {
-        invokeMemoryAgent
+        invokeMemoryAgent,
+        streamAgentResult
     }
 }

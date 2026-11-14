@@ -21,14 +21,19 @@ export class ContextBuilder {
         const userProfile = await this.memory.readMemoryFiles(`MEMORY-${this.userData.userId}.md`)
         const todayLog = await this.memory.readToday(new Date())
 
-        const contextLayer = [
+        const memoryAgentContextLayer = [
             `# System Layer\n${systemPrompt}`,
             `# Profile Layer\n${userProfile}`,
             `# Recent STM Layer\n${todayLog}`
         ]
 
-        const context = contextLayer.join("\n\n")
-        const finalPrompt = `${context}\n\n# New Input\n${userQuery}`
+        const coderAgentContextLayers = [
+            `# Profile Layer\n${userProfile}`,
+            `# Recent STM Layer\n${todayLog}`
+        ].join("\n\n")
+
+        const memoryContext = memoryAgentContextLayer.join("\n\n")
+        const finalPrompt = `<working_memory>${memoryContext}</working_memory>\n\n<current_user_input># New Input\n${userQuery}</current_user_input>`
         const numberOfTokens = estimateTokens(finalPrompt)
 
         if (numberOfTokens > this.modelContextLimit) {
@@ -57,6 +62,7 @@ export class ContextBuilder {
 
         return {
             prompt: finalPrompt,
+            coderAgentContextLayers,
             diagnostics: {
                 estimatedTokens: numberOfTokens
             }

@@ -25,7 +25,7 @@ export const TOOL_REGISTRY = {
     ast: {
         description: "Code structure analysis - extract imports, functions, classes, and types.",
         tools: ["ast_analyze"],
-        load: (toolName: string) => import("./ast").then(m => [m.selectAstTools[toolName]])
+        load: (toolName: string) => import("./ast").then(m => m.selectAstTools[toolName])
     },
     git: {
         description: "Git awareness - diff, log, status. Read-only",
@@ -34,7 +34,7 @@ export const TOOL_REGISTRY = {
     },
     todo: {
         description: "Create, read, update, and advance workflow TODO lists.",
-        tools: ["read_todos", "update_todos", "write_todos", "get_next_runnable_tasks"],
+        tools: ["read_todos", "update_todos", "write_todos", "get_next_runnable_task"],
         load: (toolName: string) => import("./todo").then(m => m.selectTodoTools[toolName])
     },
     task: {

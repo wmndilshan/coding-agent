@@ -9,6 +9,7 @@ import MongoStore from "connect-mongo"
 
 import mongoose from "mongoose"
 import { UserService } from "@/app/services/UserService"
+import { postChatStream } from "@/app/http/controllers/chatController"
 
 export function expressServer(app: Express, PORT: number) {
     const router = Router()
@@ -135,6 +136,13 @@ export function expressServer(app: Express, PORT: number) {
             res.json({ user: req.user })
         }
     )
+
+    app.post(
+        "/chat",
+        postChatStream
+    )
+
+    app.use(handleExpressError)
 
     app.listen(PORT, () => {
         console.log(`Express server is running at http://localhost:${PORT}`)
