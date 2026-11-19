@@ -10,6 +10,8 @@ import MongoStore from "connect-mongo"
 import mongoose from "mongoose"
 import { UserService } from "@/app/services/UserService"
 import { postChatStream } from "@/app/http/controllers/chatController"
+import { uploadProject } from "@/app/http/controllers/uploadFileController"
+import { getChatHistory } from "@/app/http/controllers/chatHistoryController"
 
 export function expressServer(app: Express, PORT: number) {
     const router = Router()
@@ -22,7 +24,7 @@ export function expressServer(app: Express, PORT: number) {
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }))
 
-    app.use(handleExpressError)
+    app.use(uploadProject(router))
 
     app.get("/", async (req: Request, res: Response) => {
         res.json({ message: "server is up" })
@@ -138,10 +140,15 @@ export function expressServer(app: Express, PORT: number) {
     )
 
     app.post(
-        "/chat",
+        "/chats",
         postChatStream
     )
 
+    app.get(
+        "/chats",
+        getChatHistory
+    )
+    
     app.use(handleExpressError)
 
     app.listen(PORT, () => {
